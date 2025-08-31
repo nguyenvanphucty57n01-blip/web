@@ -25,7 +25,6 @@ body {
     background-color: var(--bg-color);
     color: var(--primary-color);
     line-height: 1.6;
-    cursor: none;
     overflow-x: hidden;
 }
 
@@ -69,33 +68,6 @@ body {
 @keyframes aurora {
     from { background-position: 0% 0%; }
     to { background-position: 200% 200%; }
-}
-
-/* --- CON TRỎ CHUỘT TÙY CHỈNH --- */
-#cursor-dot, #cursor-outline {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-}
-#cursor-dot {
-    width: 8px;
-    height: 8px;
-    background-color: var(--secondary-color);
-}
-#cursor-outline {
-    width: 40px;
-    height: 40px;
-    border: 2px solid rgba(88, 166, 255, 0.5);
-    transition: transform 0.2s ease-out, width 0.3s, height 0.3s, background-color 0.3s;
-}
-#cursor-outline.hovered {
-    width: 60px;
-    height: 60px;
-    background-color: rgba(88, 166, 255, 0.1);
 }
 
 /* --- GLASSMORPHISM & NAVBAR --- */
@@ -256,7 +228,6 @@ body {
     text-align: center;
 }
 #box-cta-portfolio i { font-size: 3rem; margin-bottom: 20px; color: var(--secondary-color); }
-#box-cta-portfolio h3 { font-size: 2rem; color: white; margin-bottom: 10px; }
 .interactive-link { color: var(--secondary-color); font-weight: 600; text-decoration: none; }
 
 /* --- PORTFOLIO GRID --- */
@@ -377,7 +348,7 @@ body {
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
-    cursor: none;
+    cursor: default; /* Đổi con trỏ về mặc định */
 }
 @keyframes zoomIn {
     from { transform: scale(0.8); opacity: 0; }
@@ -388,8 +359,7 @@ body {
 .reveal {
     opacity: 0;
     transform: translateY(50px);
-    transition: opacity 1s, transform 1s;
-    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .reveal.active {
     opacity: 1;
