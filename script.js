@@ -1,30 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     
     // --- CUSTOM CURSOR ---
-    const cursorDot = document.querySelector("#cursor-dot");
-    const cursorOutline = document.querySelector("#cursor-outline");
-    const interactiveElements = document.querySelectorAll(".interactive, .interactive-link");
-
-    if (window.matchMedia("(min-width: 769px)").matches) {
-        window.addEventListener("mousemove", function (e) {
-            const posX = e.clientX;
-            const posY = e.clientY;
-
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
-        });
-
-        interactiveElements.forEach((el) => {
-            el.addEventListener("mouseenter", () => cursorOutline.classList.add("hovered"));
-            el.addEventListener("mouseleave", () => cursorOutline.classList.remove("hovered"));
-        });
-    }
-
+    // Loại bỏ đoạn code tạo hiệu ứng con trỏ tùy chỉnh.
+    
     // --- MAGNETIC BUTTON ---
     const magneticButton = document.querySelector('.magnetic-button');
     if(magneticButton && window.gsap) {
@@ -53,15 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // --- INFINITE SCROLLING MARQUEE ---
-    const scroller = document.querySelector(".scrolling-content");
-    if(scroller) {
-        const items = Array.from(scroller.children);
-        items.forEach(item => {
-            const duplicatedItem = item.cloneNode(true);
-            duplicatedItem.setAttribute("aria-hidden", true);
-            scroller.appendChild(duplicatedItem);
-        });
-    }
+    // Logic này được xử lý hoàn toàn bằng CSS.
     
     // --- REVEAL ON SCROLL ---
     const revealElements = document.querySelectorAll(".reveal");
