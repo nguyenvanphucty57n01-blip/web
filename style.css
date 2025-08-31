@@ -47,8 +47,8 @@ body {
 
 .text-center { text-align: center; }
 
-/* --- HIỆU ỨNG NỀN AURORA --- */
-#aurora-bg {
+/* --- HIỆU ỨNG NỀN AURORA (ĐÃ TẮT ĐỂ TĂNG HIỆU SUẤT) --- */
+/* #aurora-bg {
     position: fixed;
     top: 0;
     left: 0;
@@ -69,6 +69,7 @@ body {
     from { background-position: 0% 0%; }
     to { background-position: 200% 200%; }
 }
+*/
 
 /* --- GLASSMORPHISM & NAVBAR --- */
 .glassmorphic {
@@ -201,6 +202,7 @@ body {
     height: 100%;
     width: max-content;
     animation: scroll 20s linear infinite;
+    will-change: transform; /* Tối ưu hóa hiệu suất animation */
 }
 .scrolling-content img {
     height: 100%;
@@ -212,13 +214,17 @@ body {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
 }
+
 #box-stats {
     display: flex;
-    justify-content: space-around;
+    justify-content: center; 
     align-items: center;
     text-align: center;
 }
-.stat-item h4 { font-size: 3rem; color: var(--secondary-color); font-weight: 700; }
+.stats-marquee .marquee-text {
+    padding: 0 15px; 
+}
+
 #box-cta-portfolio {
     grid-column: span 3;
     display: flex;
@@ -348,7 +354,7 @@ body {
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
-    cursor: default; /* Đổi con trỏ về mặc định */
+    cursor: default;
 }
 @keyframes zoomIn {
     from { transform: scale(0.8); opacity: 0; }
