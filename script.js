@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
     
-    // --- CUSTOM CURSOR ---
-    // Loại bỏ đoạn code tạo hiệu ứng con trỏ tùy chỉnh.
-    
     // --- MAGNETIC BUTTON ---
     const magneticButton = document.querySelector('.magnetic-button');
     if(magneticButton && window.gsap) {
@@ -31,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // --- INFINITE SCROLLING MARQUEE ---
-    // Logic này được xử lý hoàn toàn bằng CSS.
+    // Hiệu ứng này đã được xử lý hoàn toàn bằng CSS để tối ưu hóa hiệu suất.
     
     // --- REVEAL ON SCROLL ---
     const revealElements = document.querySelectorAll(".reveal");
