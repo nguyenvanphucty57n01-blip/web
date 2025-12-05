@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHÚC ZION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Import CSS cho Splitting.js */
+        @import url('https://unpkg.com/splitting@1.0.6/dist/splitting.css');
+        
+        /* Cấu hình cơ bản */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale; 
+            text-rendering: optimizeLegibility;
+        }
+        
+        /* Ảnh nền cố định */
+        .hero-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: url('resources/premium-bg.png') center/cover;
+            z-index: -2;
+        }
+        
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            z-index: -1;
+        }
+        
+        /* Hiệu ứng Glassmorphism */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Thẻ liên hệ (Contact Card) */
+        .contact-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 160px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Hiệu ứng chạy sáng trên thẻ (Hover Shine Effect) */
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .contact-card:hover::before {
+            left: 100%;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Hiệu ứng hạt trôi (Floating Particles) */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+        
+        /* HIỆU ỨNG TEXT BOM TẤN (Tiêu đề chính) */
+        .text-gradient {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+            text-shadow: 
+                0 0 6px rgba(59, 130, 246, 0.9), 
+                0 0 15px rgba(139, 92, 246, 0.7), 
+                0 0 25px rgba(6, 182, 212, 0.5); 
+            transition: text-shadow 0.5s ease;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* HIỆU ỨNG NEON GLOW cho Typed.js */
+        .text-gradient-neon {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 4px rgba(59, 130, 246, 0.9), 0 0 8px rgba(139, 92, 246, 0.7);
+            font-weight: 700;
+        }
+        
+        /* Hệ thống thông báo (Notification) */
+        .notification {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+        }
+        
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Hiệu ứng Glow cho nút/icon */
+        .glow-effect {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { 
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            }
+            to { 
+                box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+            }
+        }
+        
+        /* Kiểu chữ lớn */
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #ffffff; 
+            font-weight: 400; 
+            margin-bottom: 3rem; 
+        }
+
+        /* ==========================================================
+           CSS CHO IMAGE CAROUSEL CHẠY TỪ PHẢI QUA TRÁI
+           ========================================================== */
+        .image-carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden; 
+            padding: 20px 0; 
+            margin-top: 40px; 
+            background: rgba(0, 0, 0, 0.3); 
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .image-carousel-wrapper {
+            display: flex; 
+            animation: scrollImages 60s linear infinite; 
+            width: fit-content; 
+            white-space: nowrap; 
+            will-change: transform; 
+        }
+        
+        .image-carousel-wrapper:hover {
+            animation-play-state: paused; 
+        }
+        
+        .carousel-image-item {
+            flex-shrink: 0; 
+            margin-right: 20px; 
+            width: 250px; 
+            height: 150px; 
+            background-color: rgba(255, 255, 255, 0.08); 
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .carousel-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            border-radius: 12px;
+        }
+        
+        .carousel-image-item:hover {
+            transform: translateY(-10px) scale(1.05); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        
+        @keyframes scrollImages {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+        }
+        
+        /* Hiệu ứng Ripple cho nút bấm */
+        .ripple-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple-effect::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .ripple-effect:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-background"></div>
+    
+    <div class="floating-particles" id="particles"></div>
+    
+    <div id="notification" class="notification">
+        <div class="flex items-center space-x-3">
+            <div id="notification-icon" class="w-8 h-8"></div>
+            <span id="notification-text" class="text-gray-800 font-medium text-lg"></span>
+        </div>
+    </div>
+    
+    <div class="min-h-screen flex flex-col justify-center items-center px-4 py-8 relative z-10">
+        
+        <div class="text-center mb-16">
+            <h1 class="hero-title text-gradient mb-6">
+                <span data-splitting>PHÚC ZION</span>
+            </h1>
+            <div class="hero-subtitle glass-effect inline-block px-4 py-2 rounded-xl">
+                <span id="typed-text"></span>
+            </div>
+        </div>
+        
+         <div class="contact-grid grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mb-16 max-w-6xl mx-auto px-2">
+            <div class="contact-card p-4 md:p-8 text-center cursor-pointer ripple-effect group" data-platform="facebook">
+                <div class="contact-icon w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-blue-600 text-white group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white text-base md:text-xl font-semibold mb-1 md:mb-2">Facebook</h3>
+                <p class="text-white/70 text-xs md:text-sm mb-0 md:mb-4 hidden md:block">Kết nối qua Messenger</p>
+                <div class="text-[10px] md:text-xs text-white/50 mt-1 md:mt-0">Nhấn để chat</div>
+            </div>
+            
+            <div class="contact-card p-4 md:p-8 text-center cursor-pointer ripple-effect group" data-platform="zalo">
+                <div class="contact-icon w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-green-600 text-white group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white text-base md:text-xl font-semibold mb-1 md:mb-2">Zalo</h3>
+                <p class="text-white/70 text-xs md:text-sm mb-0 md:mb-4 hidden md:block">Chat nhanh qua Zalo</p>
+                <div class="text-[10px] md:text-xs text-white/50 mt-1 md:mt-0">Nhấn để mở</div>
+            </div>
+            
+            <div class="contact-card p-4 md:p-8 text-center cursor-pointer ripple-effect group" data-platform="phone">
+                <div class="contact-icon w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-purple-500 to-purple-600 text-white group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white text-base md:text-xl font-semibold mb-1 md:mb-2">Điện Thoại</h3>
+                <p class="text-white/70 text-xs md:text-sm mb-0 md:mb-4 hidden md:block">Gọi trực tiếp</p>
+                <div class="text-[10px] md:text-xs text-white/50 mt-1 md:mt-0">Nhấn để gọi</div>
+            </div>
+            
+            <div class="contact-card p-4 md:p-8 text-center cursor-pointer ripple-effect group" data-platform="email">
+                <div class="contact-icon w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-orange-500 to-orange-600 text-white group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white text-base md:text-xl font-semibold mb-1 md:mb-2">Email</h3>
+                <p class="text-white/70 text-xs md:text-sm mb-0 md:mb-4 hidden md:block">Gửi email nhanh</p>
+                <div class="text-[10px] md:text-xs text-white/50 mt-1 md:mt-0">Nhấn để gửi</div>
+            </div>
+        </div>
+
+        <div id="feature-toggle-icon" class="glass-effect rounded-full w-16 h-16 flex items-center justify-center cursor-pointer text-white mx-auto mb-16 glow-effect transition-all duration-300 hover:scale-110 hover:shadow-lg" role="button" aria-expanded="false" aria-controls="feature-cards-container">
+            <svg id="toggle-icon-svg" class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+
+        <div id="feature-cards-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 max-w-4xl mx-auto hidden opacity-0">
+            <div class="glass-effect rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <h4 class="text-white font-semibold mb-2">Hỗ Trợ 24/7</h4>
+                <p class="text-white/70 text-sm">Luôn sẵn sàng phục vụ bạn mọi lúc</p>
+            </div>
+            
+            <div class="glass-effect rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                    </svg>
+                </div>
+                <h4 class="text-white font-semibold mb-2">Phản Hồi Nhanh</h4>
+                <p class="text-white/70 text-sm">Trả lời mọi thắc mắc trong vài phút</p>
+            </div>
+            
+            <div class="glass-effect rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h4 class="text-white font-semibold mb-2">Chuyên Nghiệp</h4>
+                <p class="text-white/70 text-sm">Đội ngũ có chuyên môn cao</p>
+            </div>
+        </div>
+
+        <div class="image-carousel-container w-full">
+            <div class="image-carousel-wrapper" id="image-carousel-wrapper">
+                </div>
+        </div>
+        
+        <div class="text-center mt-16">
+            <a href="about.html" class="inline-block glass-effect text-white font-semibold px-8 py-4 rounded-full hover:bg-white/10 transition-all duration-300 transform hover:scale-105 glow-effect">
+                Tìm Hiểu Thêm 
+            </a>
+        </div>
+
+    </div>
+    
+    <script>
+        // Hiệu ứng Typed.js
+        const typed = new Typed('#typed-text', {
+            strings: [
+                '<span class="text-xl md:text-2xl text-indigo-300 font-bold">CHÀO MỪNG BẠN ĐẾN VỚI <b class="text-gradient-neon">PHÚC ZION</b></span>',
+                '<span class="text-xl md:text-2xl text-teal-300 font-bold">RẤT VUI ĐƯỢC GẶP BẠN! <span class="text-white">✨</span></span>',
+                '<span class="text-xl md:text-2xl text-amber-300 font-bold">HÃY LIÊN HỆ VỚI TÔI ĐỂ <b class="text-white bg-gradient-to-r from-red-600 to-pink-600 px-2 py-0.5 rounded-lg shadow-lg">ĐẶT LỊCH CHỤP NGAY!</b></b></span>',
+                '<span class="text-xl md:text-2xl text-lime-400 font-bold">CHÚC BẠN CÓ NGÀY TỐT LÀNH! <span class="text-white text-3xl">😊</span></span>',
+            ],
+            typeSpeed: 40,
+            backSpeed: 20,
+            backDelay: 1500,
+            loop: true,
+            showCursor: true,
+            cursorChar: '█'
+            
+        });
+        
+        // Initialize Splitting.js for text animations
+        Splitting();
+        
+        // Hiệu ứng title như game bom tấn
+        anime({
+            targets: '.text-gradient .char',
+            scale: [0.5, 1],      
+            rotateZ: [-90, 0],    
+            opacity: [0, 1],
+            translateY: [50, 0],  
+            
+            easing: 'spring(1, 80, 10, 0)', 
+            
+            duration: 1600, 
+            delay: (el, i) => 80 * i + 300 
+        });
+        
+        // Contact data
+        const contactData = {
+            facebook: {
+                url: 'https://www.facebook.com/phuczip9',
+                text: 'Đang mở Facebook Messenger...',
+                icon: '<svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>'
+            },
+            zalo: {
+                url: 'https://zalo.me/0336911653',
+                text: 'Đang mở Zalo...',
+                icon: '<svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>'
+            },
+            phone: {
+                url: 'tel:0336911653',
+                text: 'Số điện thoại: 0336911653',
+                icon: '<svg class="w-8 h-8 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>'
+            },
+            email: {
+                url: 'mailto:nguyenphuczip3@gmail.com', // Đã sửa thành mailto
+                text: 'Email: nguyenphuczip3@gmail.com',
+                icon: '<svg class="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>'
+            }
+        };
+        
+        // Contact card click handlers
+        document.querySelectorAll('.contact-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const platform = this.dataset.platform;
+                const data = contactData[platform];
+                
+                if (data) {
+                    // Show notification
+                    showNotification(data.text, data.icon);
+                    
+                    // Animate card
+                    anime({
+                        targets: this,
+                        scale: [1, 0.95, 1],
+                        duration: 300,
+                        easing: 'easeInOutQuad'
+                    });
+                    
+                    // Open link after animation
+                    setTimeout(() => {
+                        window.open(data.url, '_blank');
+                    }, 300);
+                }
+            });
+        });
+        
+        // Notification system
+        function showNotification(text, icon) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            const notificationIcon = document.getElementById('notification-icon');
+            
+            notificationText.textContent = text;
+            notificationIcon.innerHTML = icon;
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+        
+        // Floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = Math.random() * window.innerHeight + 'px';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            
+            document.getElementById('particles').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 8000);
+        }
+        
+        // Create particles periodically
+        setInterval(createParticle, 800);
+        
+        // Initial particles
+        for (let i = 0; i < 15; i++) {
+            setTimeout(createParticle, i * 200);
+        }
+        
+        // Animate contact cards on load
+        anime({
+            targets: '.contact-card',
+            translateY: [100, 0],
+            opacity: [0, 1],
+            delay: anime.stagger(200, {start: 500}),
+            duration: 1000,
+            easing: 'easeOutExpo'
+        });
+        
+        // Add hover sound effect (visual feedback)
+        document.querySelectorAll('.contact-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                anime({
+                    targets: this.querySelector('.contact-icon'),
+                    rotate: '5deg',
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                anime({
+                    targets: this.querySelector('.contact-icon'),
+                    rotate: '0deg',
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                });
+            });
+        });
+
+
+        // ==========================================================
+        // LOGIC: TOGGLE THẺ TÍNH NĂNG (FEATURE CARDS)
+        // ==========================================================
+        const toggleIcon = document.getElementById('feature-toggle-icon');
+        const featureContainer = document.getElementById('feature-cards-container');
+        const toggleIconSvg = document.getElementById('toggle-icon-svg').querySelector('path');
+        let isFeaturesVisible = false;
+
+        // Path SVG cho icon đóng (X) và mở (Bars)
+        const iconPaths = {
+            open: 'M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z', 
+            closed: 'M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z'
+        };
+
+        toggleIcon.addEventListener('click', function() {
+            isFeaturesVisible = !isFeaturesVisible;
+            
+            if (isFeaturesVisible) {
+                featureContainer.classList.remove('hidden');
+                
+                anime({
+                    targets: featureContainer,
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 500,
+                    easing: 'easeOutQuad',
+                    complete: () => {
+                        anime({
+                            targets: '#feature-cards-container > div',
+                            translateY: [30, 0],
+                            opacity: [0, 1],
+                            delay: anime.stagger(100),
+                            duration: 600,
+                            easing: 'easeOutExpo'
+                        });
+                    }
+                });
+
+                toggleIconSvg.setAttribute('d', iconPaths.open);
+                toggleIcon.setAttribute('aria-expanded', 'true');
+                showNotification('ĐÃ HIỆN.', '<svg class="w-8 h-8 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>');
+
+            } else {
+                anime({
+                    targets: featureContainer,
+                    opacity: [1, 0],
+                    translateY: [0, 20],
+                    duration: 300,
+                    easing: 'easeInQuad',
+                    complete: () => {
+                        featureContainer.classList.add('hidden');
+                    }
+                });
+
+                toggleIconSvg.setAttribute('d', iconPaths.closed);
+                toggleIcon.setAttribute('aria-expanded', 'false');
+                showNotification('ĐÃ ẨN.', '<svg class="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8.28 7.28a.5.5 0 00-.775.642L9.2 10l-1.695 2.078a.5.5 0 00.775.642L10 10.795l1.695 2.078a.5.5 0 00.775-.642L10.8 10l1.695-2.078a.5.5 0 00-.775-.642L10 9.205 8.28 7.28z"></path></svg>');
+            }
+        });
+
+        // ==========================================================
+        // LOGIC MỚI: IMAGE CAROUSEL CHẠY TỪ PHẢI QUA TRÁI
+        // ==========================================================
+        const imageCarouselWrapper = document.getElementById('image-carousel-wrapper');
+
+        // HÃY THAY THẾ CÁC ĐƯỜNG DẪN DƯỚI ĐÂY BẰNG CÁC ĐƯỜNG DẪN THỰC TẾ CỦA 10 BỨC ẢNH CỦA BẠN!
+        const imageUrls = [
+            'https://via.placeholder.com/250x150/FF5733/FFFFFF?text=PHUC+01',
+            'https://via.placeholder.com/250x150/33FF57/FFFFFF?text=PHUC+02',
+            'https://via.placeholder.com/250x150/3357FF/FFFFFF?text=PHUC+03',
+            'https://via.placeholder.com/250x150/FF33FB/FFFFFF?text=PHUC+04',
+            'https://via.placeholder.com/250x150/FFEB33/FFFFFF?text=PHUC+05',
+            'https://via.placeholder.com/250x150/8D33FF/FFFFFF?text=PHUC+06',
+            'https://via.placeholder.com/250x150/33FFF7/FFFFFF?text=PHUC+07',
+            'https://via.placeholder.com/250x150/FF8D33/FFFFFF?text=PHUC+08',
+            'https://via.placeholder.com/250x150/7A33FF/FFFFFF?text=PHUC+09',
+            'https://via.placeholder.com/250x150/33FF8D/FFFFFF?text=PHUC+10',
+        ];
+
+        function populateImageCarousel() {
+            let imagesHtml = '';
+            // Thêm các ảnh vào carousel
+            imageUrls.forEach(url => {
+                imagesHtml += `
+                    <div class="carousel-image-item">
+                        <img src="${url}" alt="Carousel Image">
+                    </div>
+                `;
+            });
+            // Nhân đôi nội dung để tạo hiệu ứng cuộn vô hạn mượt mà
+            imageCarouselWrapper.innerHTML = imagesHtml + imagesHtml; 
+        }
+
+        // Gọi hàm để tạo các ảnh khi trang tải
+        populateImageCarousel();
+
+    </script>
+</body>
+</html>
