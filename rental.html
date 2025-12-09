@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHÚC ZION - Bảng Giá Thuê Thiết Bị</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* =========================================
+           CSS TỐI GIẢN
+           ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .hero-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -2;
+            background: url('resources/premium-bg.png') center/cover no-repeat; 
+            will-change: transform; 
+        }
+        .hero-background::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            pointer-events: none; 
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateZ(0);
+        }
+        .rental-title {
+            font-family: 'Playfair Display', serif; font-weight: 700;
+            font-size: clamp(2rem, 6vw, 4rem); line-height: 1.1;
+        }
+        .price-image {
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(245, 158, 11, 0.4);
+            transition: transform 0.3s ease;
+        }
+        .price-image:hover {
+            transform: scale(1.01);
+        }
+
+        /* Responsive cho ảnh */
+        @media (min-width: 768px) {
+            .image-container { max-width: 800px; }
+        }
+
+        /* =========================================
+           MODAL ƯU ĐÃI (THIẾT KẾ TRONG SUỐT)
+           ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            /* Tăng độ trong suốt overlay */
+            background: rgba(0, 0, 0, 0.7); 
+            backdrop-filter: blur(8px); /* Blur mạnh hơn */
+            z-index: 50;
+            display: none; 
+        }
+        .modal-content {
+            /* Sử dụng Glassmorphism effect */
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(15px); /* Làm mờ nội dung phía sau */
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Viền mỏng */
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5); /* Shadow tối */
+            max-width: 90%;
+            width: 500px;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; /* Hiệu ứng nảy */
+        }
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .promo-card {
+            background: rgba(255, 255, 255, 0.05); /* Lớp nền nhẹ bên trong */
+            border: 1px dashed #fcd34d; /* Viền nét đứt vàng */
+        }
+        .promo-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(253, 224, 71, 0.4); /* Neon glow */
+        }
+        .promo-button:hover {
+             box-shadow: 0 0 25px rgba(253, 224, 71, 0.8);
+             transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-background"></div>
+
+    <div id="promo-modal-overlay" class="modal-overlay">
+        <div id="promo-modal-content" class="modal-content p-6 md:p-10 text-center">
+            
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-4">
+                <span class="text-yellow-400">✨ ƯU ĐÃI SIÊU SALE ✨</span>
+            </h2>
+            
+            <div class="promo-card p-5 rounded-xl mb-6">
+                <p class="text-white/80 text-lg mb-2">
+                    Chào mừng sự kiện cuối năm!
+                </p>
+                <div class="my-3">
+                    <p class="text-xl md:text-3xl font-black text-red-500">GIẢM NGAY 10%</p>
+                    <p class="text-yellow-300 text-sm font-semibold mt-1">
+                        Áp dụng cho tất cả đơn thuê vào ngày:
+                    </p>
+                    <p class="text-4xl md:text-5xl font-extrabold text-white mt-2 mb-1">
+                        12 / 12 / 2025
+                    </p>
+                </div>
+                <p class="text-white/60 text-xs mt-4">
+                    *Chương trình chỉ áp dụng cho khách hàng đăng ký trước.
+                </p>
+            </div>
+
+            <button id="close-modal" class="promo-button w-full bg-yellow-500 text-gray-900 font-bold text-lg px-6 py-3 rounded-full hover:bg-yellow-400">
+                ĐÃ BIẾT
+            </button>
+        </div>
+    </div>
+    <div class="min-h-screen flex flex-col items-center px-4 py-16 relative z-10 w-full">
+        
+        <div class="text-center mb-12 max-w-3xl">
+            <a href="index.html" class="text-white/70 hover:text-white transition-colors mb-4 inline-block">
+                ← Quay lại trang chủ
+            </a>
+            <h1 class="rental-title text-white mb-4">
+                Bảng Giá Thuê Thiết Bị 📷
+            </h1>
+            <p class="text-lg text-white/80 glass-effect inline-block px-4 py-2 rounded-xl">
+                Hãy dùng thiết bị để mang lại cho bạn những khoảng khắc thật đáng nhớ!
+            </p>
+        </div>
+
+        <div class="mb-12 w-full image-container max-w-2xl">
+            <img 
+                src="gia_may_anh/q1.jpg" 
+                alt="Bảng giá thuê máy ảnh và thiết bị" 
+                class="price-image mx-auto w-full"
+                loading="lazy"
+            >
+        </div>
+
+        <div class="mt-8 max-w-4xl w-full text-center">
+            <div class="glass-effect p-8 rounded-2xl border border-white/20">
+                <h3 class="text-2xl font-semibold mb-4 text-yellow-400">🚨 Lưu ý quan trọng khi thuê thiết bị</h3>
+                <ul class="text-white/80 text-left space-y-3 list-disc list-inside md:text-lg">
+                    <li>Giá thuê được tính theo **24 giờ** và có thể thay đổi tùy theo thời điểm/số lượng thuê.</li>
+                    <li>Vui lòng **Liên hệ trực tiếp** qua Zalo/Điện thoại để xác nhận tình trạng thiết bị và đặt lịch giữ hàng.</li>
+                    <li>Cần chuẩn bị **Giấy tờ tùy thân hợp lệ** (CMND/CCCD hoặc Bằng Lái) và khoản **Tiền đặt cọc** theo thỏa thuận hợp đồng.</li>
+                    <li>Thiết bị phải được hoàn trả đúng giờ, trong tình trạng nguyên vẹn. Mọi hư hỏng sẽ được bồi thường theo giá trị niêm yết.</li>
+                    <li>Chúng tôi khuyến khích kiểm tra kỹ thiết bị tại chỗ trước khi nhận.</li>
+                </ul>
+            </div>
+            
+            <a href="index.html" class="inline-block bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-bold px-10 py-4 rounded-full mt-8 hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/50">
+                Liên Hệ Đặt Thuê Ngay (0336911653)
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalOverlay = document.getElementById('promo-modal-overlay');
+            const closeModalButton = document.getElementById('close-modal');
+
+            // Hàm hiển thị modal
+            function showModal() {
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Ngăn cuộn trang
+            }
+
+            // Hàm ẩn modal
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = ''; // Cho phép cuộn trang lại
+            }
+
+            // Tự động hiển thị modal sau 500ms khi trang tải xong
+            setTimeout(showModal, 500);
+
+            // Xử lý sự kiện đóng modal
+            closeModalButton.addEventListener('click', closeModal);
+            
+            // Đóng modal khi click ra ngoài overlay
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+            
+            // Đóng modal khi nhấn phím Esc
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

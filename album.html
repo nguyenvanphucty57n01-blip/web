@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album & Portfolio - PHÚC ZION</title>
+    
+    <link rel="preload" href="resources/premium-bg.png" as="image">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <style>
+        /* ================= STYLE CHUNG ================= */
+        body { font-family: 'Inter', sans-serif; background: #050505; color: white; overflow-x: hidden; }
+        
+        .hero-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -2;
+            background: url('resources/premium-bg.png') center/cover no-repeat;
+        }
+        .hero-background::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(5, 5, 5, 0.9) 0%, rgba(10, 10, 20, 0.95) 100%);
+            z-index: -1;
+        }
+        
+        /* Glass Nav */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ================= GAMER POPUP STYLE (NEW) ================= */
+        .gamer-modal {
+            position: relative;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            /* Cắt vát 4 góc kiểu Sci-fi */
+            clip-path: polygon(
+                20px 0, 100% 0, 
+                100% calc(100% - 20px), calc(100% - 20px) 100%, 
+                0 100%, 0 20px
+            );
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+        }
+
+        /* Viền Neon phát sáng chạy quanh */
+        .gamer-modal::before {
+            content: ''; position: absolute; inset: 0; z-index: -1;
+            background: linear-gradient(45deg, #00f3ff, #bd00ff);
+            margin: -2px; /* Độ dày viền */
+            clip-path: polygon(
+                20px 0, 100% 0, 
+                100% calc(100% - 20px), calc(100% - 20px) 100%, 
+                0 100%, 0 20px
+            );
+        }
+
+        /* Hiệu ứng quét Scanline */
+        .scan-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: rgba(0, 243, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.8);
+            opacity: 0.6;
+            animation: scan 3s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scan {
+            0% { top: -10%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+
+        /* Nút bấm kiểu Cyberpunk */
+        .cy-btn {
+            position: relative;
+            background: transparent;
+            color: #00f3ff;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid #00f3ff;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .cy-btn:hover {
+            background: #00f3ff;
+            color: black;
+            box-shadow: 0 0 20px #00f3ff;
+        }
+        .cy-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transition: 0.5s;
+        }
+        .cy-btn:hover::before { left: 100%; }
+
+        /* Font chữ Hacker */
+        .tech-font { font-family: 'JetBrains Mono', monospace; }
+
+        /* ================= END GAMER STYLE ================= */
+
+        /* Album Card Style (Giữ nguyên) */
+        .album-card {
+            position: relative; border-radius: 12px; overflow: hidden; cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08);
+            height: 300px; 
+        }
+        .album-card:hover { transform: translateY(-5px); box-shadow: 0 0 25px rgba(0, 140, 255, 0.3); border-color: rgba(0, 243, 255, 0.5); }
+        .album-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+        .album-card:hover img { transform: scale(1.1); }
+        .album-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, transparent 100%);
+        }
+        .album-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="hero-background"></div>
+
+    <div id="welcome-popup" class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/90 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-500">
+        
+        <div class="gamer-modal w-full max-w-lg mx-4 p-[2px] transform scale-95 transition-transform duration-300" id="popup-content">
+            <div class="relative bg-[#0d0d0d] p-8 h-full w-full overflow-hidden" style="clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);">
+                
+                <div class="scan-line"></div>
+                
+                <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00f3ff]"></div>
+                <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#bd00ff]"></div>
+
+                <div class="flex items-center space-x-3 mb-6 border-b border-gray-800 pb-4">
+                    <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <h3 class="text-[#00f3ff] text-lg font-bold tech-font tracking-widest">THÔNG BÁO</h3>
+                </div>
+                
+                <div class="text-center">
+                    <div class="mb-4">
+                        <svg class="w-12 h-12 mx-auto text-[#bd00ff] animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+
+                    <h2 class="text-2xl text-white font-bold mb-3 font-playfair">ĐANG CẬP NHẬT</h2>
+                    
+                    <p class="text-gray-400 mb-8 font-mono text-sm leading-relaxed">
+                        > Hiện tại những ảnh còn lại
+                         Admin sẽ cập nhật sau.<br>
+                        <br>
+                        > Cảm ơn bạn đã ghé thăm album ảnh!<br>
+                    </p>
+                    
+                    <button id="close-popup-btn" class="cy-btn py-3 px-10 w-full font-bold text-sm">
+                        [ ĐÃ RÕ ]
+                    </button>
+                </div>
+
+                <div class="absolute bottom-2 left-4 text-[10px] text-gray-700 tech-font">ID: #ZION</div>
+            </div>
+        </div>
+    </div>
+    <nav class="fixed top-0 w-full glass-nav z-50 px-4 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center space-x-2 text-white/70 hover:text-[#00f3ff] transition-colors nav-btn">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span class="font-medium tech-font text-sm"> QUAY LẠI HOME</span>
+        </a>
+        <div class="font-playfair font-bold text-xl tracking-wider text-white">PHÚC ZION</div>
+    </nav>
+
+    <main class="pt-28 pb-20 px-4 max-w-7xl mx-auto min-h-screen">
+        <div class="text-center mb-16 relative">
+            <h3 class="text-4xl md:text-6xl font-bold font-playfair mb-4 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                Mục Ảnh Tiêu Biểu
+            </h3>
+            <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-[#00f3ff] to-transparent mx-auto"></div>
+            <p class="text-[#00f3ff]/60 mt-3 tech-font text-xs tracking-[0.2em]">Nhấn để xem</p>
+        </div>
+
+        <div id="album-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            </div>
+    </main>
+
+    <div id="lightbox-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[1001] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <button id="lightbox-close" class="absolute top-4 right-4 text-white/60 hover:text-red-500 transition-colors z-50">
+            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
+        <button id="lightbox-prev" class="absolute left-4 text-white/50 hover:text-[#00f3ff] transition-all z-50">
+            <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+
+        <img id="lightbox-image" src="" class="max-w-full max-h-[85vh] object-contain shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-[#333] select-none">
+
+        <button id="lightbox-next" class="absolute right-4 text-white/50 hover:text-[#00f3ff] transition-all z-50">
+            <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" /></svg>
+        </button>
+        
+        <div id="lightbox-counter" class="absolute bottom-8 tech-font text-[#00f3ff] tracking-widest text-sm">1 / 10</div>
+    </div>
+
+   <script>
+        // ================= Mục ALBUM  =================
+        const ALBUMS = [
+           // Ảnh kỷ yếu nam     
+            {
+                title: "Kỷ Yếu Thanh Xuân",
+                category: "Kỷ Yếu",
+                cover: "anh/ducanh4.jpg", // Ảnh bìa album
+                images: ["anh/ducanh4.jpg","anh/ducanh.jpg","anh/ducanh3.jpg", 
+                "anh/da1.jpg","anh/ducanh1.jpg","anh/ducanh6.jpg",]
+            },
+           // Ảnh kỷ yếu
+            {
+                title: "Kỷ Yếu Thanh Xuân",
+                category: "Kỷ Yếu",
+                cover: "anh/hoa1.jpg",
+                images: ["anh/hoa1.jpg", "anh/hoa2.jpg", "anh/hoa4.jpg", "anh/hoa5.jpg",]
+            },
+             // Ảnh kỷ yếu
+            {
+                title: "Thời Học Sinh", //tên album h1 lớn
+                category: "Kỷ Yếu",
+                cover: "anh/hoang.jpg",
+                images: ["anh/hoang.jpg","anh/hoang1.jpg"]
+            },
+             // Ảnh kỷ yếu
+            {
+                title: "Thời Học Sinh", //tên album h1 lớn
+                category: "Kỷ Yếu",
+                cover: "anh/2.jpg",
+                images: ["anh/2.jpg", "anh/3.jpg", "anh/4.jpg", "anh/5.jpg",
+                "anh/ngocA.jpg",]
+            },
+            {
+                title: "Thời Học Sinh", //tên album h1 lớn
+                category: "Kỷ Yếu",
+                cover: "anh/A.jpg",
+                images: ["anh/A.jpg"]
+            },
+            {
+                title: "Buồn Trong Đêm",
+                category: "Tâm Trạng",
+                cover: "anh/mai1.jpg",
+                images: ["anh/mai1.jpg", "anh/mai2.jpg",]
+            },
+            {
+                title: "Đồi Thông",
+                category: "Tâm Trạng",
+                cover: "anh/1.jpg",
+                images: ["anh/1.jpg",]
+            },
+            {
+                title: "chill",
+                category: "",
+                cover: "anh/mt2.jpg",
+                images: ["anh/mt2.jpg", "anh/mt1.jpg", ]
+            },
+           
+        ];
+        // ================= LOGIC XỬ LÝ =================
+        let currentImages = [];
+        let currentIndex = 0;
+        
+        const container = document.getElementById('album-container');
+        const modal = document.getElementById('lightbox-modal');
+        const modalImg = document.getElementById('lightbox-image');
+        const counter = document.getElementById('lightbox-counter');
+
+        // --- POPUP LOGIC ---
+        window.addEventListener('load', () => {
+            const popup = document.getElementById('welcome-popup');
+            const popupContent = document.getElementById('popup-content');
+            const closeBtn = document.getElementById('close-popup-btn');
+
+            // Delay nhẹ cho chuyên nghiệp
+            setTimeout(() => {
+                popup.classList.remove('opacity-0', 'pointer-events-none');
+                popupContent.classList.remove('scale-95');
+                popupContent.classList.add('scale-100');
+            }, 600);
+
+            closeBtn.addEventListener('click', () => {
+                popup.classList.add('opacity-0', 'pointer-events-none');
+                popupContent.classList.remove('scale-100');
+                popupContent.classList.add('scale-95');
+            });
+        });
+
+        // 1. Render Albums
+        ALBUMS.forEach((album, idx) => {
+            const card = document.createElement('div');
+            card.className = 'album-card group';
+            card.style.opacity = '0'; card.style.transform = 'translateY(20px)';
+            
+            card.innerHTML = `
+                <img src="${album.cover}" alt="${album.title}" loading="lazy">
+                <div class="album-overlay"></div>
+                
+                <div class="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="w-8 h-8 border border-[#00f3ff] rounded-full flex items-center justify-center bg-black/50 backdrop-blur">
+                        <svg class="w-4 h-4 text-[#00f3ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </div>
+                </div>
+
+                <div class="album-info transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <div class="text-[#00f3ff] text-[10px] font-bold tech-font uppercase tracking-widest mb-1">> ${album.category}</div>
+                    <h3 class="text-white text-2xl font-playfair font-bold">${album.title}</h3>
+                    <p class="text-gray-400 text-xs mt-1 tech-font opacity-0 group-hover:opacity-100 transition-opacity">FILE_COUNT: ${album.images.length}</p>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => openGallery(album.images));
+            container.appendChild(card);
+        });
+
+        anime({
+            targets: '.album-card',
+            opacity: [0, 1], translateY: [20, 0],
+            delay: anime.stagger(100), easing: 'easeOutQuad', duration: 800
+        });
+
+        // 2. Lightbox Functions
+        function openGallery(images) {
+            currentImages = images;
+            currentIndex = 0;
+            updateImage();
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+            modal.classList.add('opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateImage() {
+            modalImg.style.opacity = '0.5';
+            setTimeout(() => {
+                modalImg.src = currentImages[currentIndex];
+                counter.innerText = `IMG_INDEX: ${currentIndex + 1} / ${currentImages.length}`;
+                modalImg.onload = () => { modalImg.style.opacity = '1'; };
+            }, 150);
+        }
+
+        function nextImage(e) { e?.stopPropagation(); currentIndex = (currentIndex + 1) % currentImages.length; updateImage(); }
+        function prevImage(e) { e?.stopPropagation(); currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length; updateImage(); }
+
+        const closeLightbox = () => {
+            modal.classList.remove('opacity-100');
+            modal.classList.add('pointer-events-none', 'opacity-0');
+            document.body.style.overflow = '';
+            setTimeout(() => { modalImg.src = ''; }, 300);
+        };
+
+        document.getElementById('lightbox-next').addEventListener('click', nextImage);
+        document.getElementById('lightbox-prev').addEventListener('click', prevImage);
+        document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+        modal.addEventListener('click', (e) => { if(e.target === modal) closeLightbox(); });
+        
+        document.addEventListener('keydown', (e) => {
+            if(modal.classList.contains('opacity-0')) return;
+            if(e.key === 'Escape') closeLightbox();
+            if(e.key === 'ArrowRight') nextImage();
+            if(e.key === 'ArrowLeft') prevImage();
+        });
+    </script>
+</body>
+</html>
